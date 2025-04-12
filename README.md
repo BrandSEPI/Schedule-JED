@@ -3,7 +3,7 @@
 A MelonLoader mod for **Schedule I** that adds a search bar to the drugs tab, allowing users to easily filter products based on their name.
 
 ## Preview
-![Mod Preview]([https://i.imgur.com/OzxPRLi.png])
+![Mod Preview](https://i.imgur.com/OzxPRLi.png)
 
 ## Features
 
