@@ -1,0 +1,7 @@
+{
+  "name": "JustEnoughDrugs",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/BrandSEPI/JustEnoughDrugs",
+  "description": "Adds a search bar to the drugs tab in Schedule I, allowing players to quickly filter and find drugs by name. Clean UI integration and real-time filtering for a smoother experience.",
+  "dependencies": ["LavaGang-MelonLoader-0.7.0"]
+}
