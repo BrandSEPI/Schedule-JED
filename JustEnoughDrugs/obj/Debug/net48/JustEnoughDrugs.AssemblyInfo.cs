@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JustEnoughDrugs")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d0ac5e5bf025b821a91ebf8330cc0407ff68479")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e8b0075eaf49cf63aac7bcc04f624e96a1e21a9e")]
 [assembly: System.Reflection.AssemblyProductAttribute("JustEnoughDrugs")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JustEnoughDrugs")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

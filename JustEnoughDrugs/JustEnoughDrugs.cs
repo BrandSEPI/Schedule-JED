@@ -6,6 +6,7 @@ using ScheduleOne.Product;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using ScheduleOne.DevUtilities;
 [assembly: MelonInfo(typeof(JustEnoughDrugs.MainMod), JustEnoughDrugs.BuildInfo.Name, JustEnoughDrugs.BuildInfo.Version, JustEnoughDrugs.BuildInfo.Author)]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
@@ -17,7 +18,7 @@ namespace JustEnoughDrugs
         public const string Description = "Add a searchBar to the drugs tab";
         public const string Author = "BrandSEPI";
         public const string Company = null;
-        public const string Version = "1.0";
+        public const string Version = "1.1";
         public const string DownloadLink = null;
     }
 
@@ -169,17 +170,21 @@ namespace JustEnoughDrugs
             inputField.ForceLabelUpdate();
 
             // Button
-            GameObject searchClearButtonGO = new GameObject("searchClearButton");
-            searchClearButtonGO.transform.SetParent(inputGO.transform, false);
-            var searchClearText = searchClearButtonGO.AddComponent<Text>();
-            searchClearText.fontStyle = FontStyle.Bold;
-            searchClearText.text = "X";
-            searchClearText.rectTransform.offsetMax = new Vector2(300, 50);
-            searchClearText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            searchClearText.fontSize = 30;
-            searchClearText.color = Color.red;
-            searchClearText.alignment = TextAnchor.MiddleCenter;
-            var button = searchClearButtonGO.AddComponent<Button>();
+            GameObject clearBtnGO = new GameObject("ClearButton");
+            clearBtnGO.transform.SetParent(inputGO.transform, false);
+            var buttonText = clearBtnGO.AddComponent<Text>();
+            buttonText.text = "X";
+            buttonText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            buttonText.fontSize = 30;
+            buttonText.color = Color.red;
+            buttonText.alignment = TextAnchor.MiddleCenter;
+            var buttonRect = clearBtnGO.GetComponent<RectTransform>();
+            buttonRect.sizeDelta = new Vector2(40, 40);
+            buttonRect.anchorMin = new Vector2(1, 1);
+            buttonRect.anchorMax = new Vector2(1, 1);
+            buttonRect.anchoredPosition = new Vector2(-15, -30);
+
+            var button = clearBtnGO.AddComponent<Button>();
             button.onClick.AddListener(ClearSearchText);
 
             inputField.onValueChanged.AddListener(OnSearchTextChanged);
