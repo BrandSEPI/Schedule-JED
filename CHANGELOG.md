@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0]
+
+### Added
+
+- Shortcuts are now disabled while the search bar is focused
+
+---
+
 ## [1.1.0]
 
 ### Changed

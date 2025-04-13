@@ -32,5 +32,8 @@
 		<Reference Include="UnityEngine.InputLegacyModule">
 			<HintPath>libs\UnityEngine.InputLegacyModule.dll</HintPath>
 		</Reference>
+		<Reference Include="Unity.InputSystem">
+			<HintPath>libs\Unity.InputSystem.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 </Project>

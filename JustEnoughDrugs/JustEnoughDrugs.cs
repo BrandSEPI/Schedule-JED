@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 using ScheduleOne.DevUtilities;
+using System.Collections.Generic;
+using ScheduleOne;
 [assembly: MelonInfo(typeof(JustEnoughDrugs.MainMod), JustEnoughDrugs.BuildInfo.Name, JustEnoughDrugs.BuildInfo.Version, JustEnoughDrugs.BuildInfo.Author)]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
@@ -18,7 +20,7 @@ namespace JustEnoughDrugs
         public const string Description = "Add a searchBar to the drugs tab";
         public const string Author = "BrandSEPI";
         public const string Company = null;
-        public const string Version = "1.1";
+        public const string Version = "1.2.0";
         public const string DownloadLink = null;
     }
 
@@ -26,8 +28,11 @@ namespace JustEnoughDrugs
     {
         private bool isInitialized = false;
         private bool wasFocusedLastFrame = false;
+        private bool isShortcutDisabled = false;
         private InputField inputField = null;
         private Transform drugItems = null;
+        private List<UnityEngine.InputSystem.InputAction> disabledActions = new List<UnityEngine.InputSystem.InputAction>();
+
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             isInitialized = false;
@@ -53,18 +58,24 @@ namespace JustEnoughDrugs
 
             if (inputField.isFocused && !wasFocusedLastFrame)
             {
-                
+
                 MelonLogger.Msg("Input field focussed.");
+                if (!isShortcutDisabled)
+                {
+                    isShortcutDisabled = true;
+                    DisableShortcuts();
+                }
             }
             else if (!inputField.isFocused && wasFocusedLastFrame)
             {
                 MelonLogger.Msg("Input field lost focus.");
+                isShortcutDisabled = false;
+                RestoreShortcuts();
             }
 
             wasFocusedLastFrame = inputField.isFocused;
         }
 
-        
 
         private Boolean initSearchBar()
         {
@@ -253,6 +264,48 @@ namespace JustEnoughDrugs
             }
         }
 
+
+        private void DisableShortcuts()
+        {
+            var input = Singleton<GameInput>.Instance;
+            var inputAsset = input.PlayerInput;
+
+
+                foreach (var action in inputAsset.actions)
+                {
+                    string bindingString = string.Join(",", action.bindings.Select(b => b.path));
+
+                    if (bindingString.Contains("/keyboard/tab") ||
+                        bindingString.Contains("/keyboard/escape") ||
+                        bindingString.Contains("/mouse/rightButton"))
+                    {
+                        continue;
+                    }
+
+                    if (action.enabled)
+                    {
+                        action.Disable();
+                        disabledActions.Add(action);
+                    }
+                }
+           
+
+            MelonLogger.Msg("All actions except allowed keys have been disabled.");
+        }
+
+        private void RestoreShortcuts()
+        {
+
+            {
+                foreach (var action in disabledActions)
+                {
+                    action.Enable();
+                }
+                disabledActions.Clear();
+                MelonLogger.Msg("All previously disabled inputs restored.");
+            }
+
+        }
     }
 
 }

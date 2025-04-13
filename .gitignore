@@ -1,2 +1,35 @@
+# === .NET / C# standard ===
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.csproj.user
+*.sln.docstates
+
+# === MelonLoader / Mods ===
+*.dll
+*.pdb
+*.mdb
+
+# === Thunderstore mod packaging ===
+*.zip
+*.nupkg
+
+# === IDEs ===
+.vscode/
+.idea/
+*.code-workspace
 .vs
-JED.zip
+
+# === Logs & Debug ===
+*.log
+*.tmp
+*.bak
+
+# === OS-generated ===
+.DS_Store
+Thumbs.db
+
+# === Auto-generated config files ===
+MelonPreferences.cfg
