@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0]
+
+### Added
+
+- Added a dropdown menu next to the search bar to filter drugs by category: "Any", "Ingredients", "Effects", or "Name"
+
+---
+
 ## [1.2.0]
 
 ### Added

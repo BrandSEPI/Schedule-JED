@@ -1,16 +1,19 @@
 # JustEnoughDrugs
 
-A MelonLoader mod for **Schedule I** that adds a search bar to the drugs tab, allowing users to easily filter products based on their name.
+A MelonLoader mod for **Schedule I** that adds a search bar to the drugs tab, allowing users to easily filter products based on their name,ingredients or effects.
 
 ## Preview
-![Mod Preview](https://i.imgur.com/OzxPRLi.png)
+
+![Mod Preview](https://i.imgur.com/9ZBYj2m.png)
 
 ## Features
 
-- **Search Bar**: A search bar is added to the drugs tab for easy filtering of drugs by their name.
-- **Real-Time Filtering**: Items are filtered as you type, allowing for quick search results.
-- **Seamless Integration**: The search bar fits naturally into the existing drugs tab, without disrupting the user interface.
-- **Zero Configuration**: The mod works out of the box without needing any setup.
+- **Search Bar**: Quickly filter drugs by typing a keyword.
+- **Dropdown Filter**: Select whether to filter by **Name**, **Ingredients**, **Effects**, or search **Any** field.
+- **Real-Time Filtering**: Results update live as you type.
+- **"None" Display**: If no drug matches your search, a clean "None" placeholder is shown.
+- **Shortcuts Disabled**: While typing, game shortcuts are temporarily disabled (except Tab, Escape, and Right Click).
+- **Zero Configuration**: Works instantly — just drop the file into the mod folder.
 
 ## Quick Start Guide
 
@@ -18,14 +21,14 @@ A MelonLoader mod for **Schedule I** that adds a search bar to the drugs tab, al
 2. Launch **Schedule I** and open the drugs tab.
 3. Enjoy the new search functionality!
 
-The search bar will filter the list of drugs as you type the name of a drug.
+The search updates instantly as you type or change the dropdown filter.
 
 ## Why You Need This
 
-Ever had trouble finding a specific drug in the drugs tab? This mod solves that problem by:
+Tired of scrolling through a long list of substances? This mod saves you time by:
 
-- Allowing you to quickly search for drugs by name.
-- Making it easy to filter and find the drug you're looking for.
+- Letting you search for drugs by **name**, **ingredients**, or **effects**
+- Instantly hiding irrelevant entries
 - Saving time and improving the overall user experience.
 
 If you have suggestions for additional features, please share them on the issues page!
@@ -41,6 +44,7 @@ If you have suggestions for additional features, please share them on the issues
 
 When you open the drugs tab:
 
-- The mod adds a search bar to the tab.
-- As you type in the search bar, the drugs list will automatically filter based on the drug name.
-- The filter updates instantly, making it easy to find specific drugs quickly.
+- The mod injects a **search bar** and **dropdown filter** into the UI.
+- Typing filters the drugs list in real-time.
+- The dropdown lets you choose what kind of data to search (e.g., name or ingredients).
+- When nothing matches your query, a "None" item appears to indicate it.

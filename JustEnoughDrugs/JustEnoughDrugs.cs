@@ -9,6 +9,9 @@ using System.Collections;
 using ScheduleOne.DevUtilities;
 using System.Collections.Generic;
 using ScheduleOne;
+using System.ComponentModel;
+using System.Reflection;
+using ScheduleOne.Property;
 [assembly: MelonInfo(typeof(JustEnoughDrugs.MainMod), JustEnoughDrugs.BuildInfo.Name, JustEnoughDrugs.BuildInfo.Version, JustEnoughDrugs.BuildInfo.Author)]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
@@ -20,7 +23,7 @@ namespace JustEnoughDrugs
         public const string Description = "Add a searchBar to the drugs tab";
         public const string Author = "BrandSEPI";
         public const string Company = null;
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
         public const string DownloadLink = null;
     }
 
@@ -30,6 +33,7 @@ namespace JustEnoughDrugs
         private bool wasFocusedLastFrame = false;
         private bool isShortcutDisabled = false;
         private InputField inputField = null;
+        private Dropdown dropdownFilter = null;
         private Transform drugItems = null;
         private List<UnityEngine.InputSystem.InputAction> disabledActions = new List<UnityEngine.InputSystem.InputAction>();
 
@@ -47,7 +51,7 @@ namespace JustEnoughDrugs
             MelonLogger.Msg("Initialising search bar...");
             while (!isInitialized)
             {
-                isInitialized = initSearchBar() && initDrugList();
+                isInitialized = initSearchBar() && initDrugList() && initDropdown();
                 yield return null;
             }
         }
@@ -104,6 +108,37 @@ namespace JustEnoughDrugs
                 return false;
             }
         }
+        private Boolean initDropdown()
+        {
+            try
+            {
+                if (isInitialized) return true;
+                Transform topbar = null;
+                var productManagerApp = GameObject.Find("ProductManagerApp");
+                if (productManagerApp != null && productManagerApp.activeInHierarchy)
+                {
+                    MelonLogger.Msg("ProductManagerApp detected, injecting search bar into Topbar...");
+                    topbar = FindChildByPath(productManagerApp.transform, "Container/Topbar");
+                    if (topbar != null)
+                    {
+                        MelonLogger.Msg("Topbar found!");
+                        dropdownFilter = SetupDropdown(topbar);
+            
+                        MelonLogger.Msg("Dropdown successfully injected.");
+                    }
+                }
+                return productManagerApp && topbar;
+            }
+
+            catch (Exception e)
+            {
+                MelonLogger.Error($"Error during search bar initialisation: {e}");
+                return false;
+            }
+        }
+
+
+   
         private Boolean initDrugList()
         {
             var productManagerApp = GameObject.Find("ProductManagerApp");
@@ -140,7 +175,7 @@ namespace JustEnoughDrugs
             rect.anchorMin = new Vector2(1, 1);
             rect.anchorMax = new Vector2(1, 1);
             rect.pivot = new Vector2(1, 1);
-            rect.sizeDelta = new Vector2(300, 60);
+            rect.sizeDelta = new Vector2(415, 60);
 
             var bg = inputGO.AddComponent<Image>();
             bg.color = new Color(1f, 1f, 1f, 0.9f);
@@ -202,6 +237,48 @@ namespace JustEnoughDrugs
             return inputField;
         }
 
+        
+        private Dropdown SetupDropdown(Transform parent)
+        {
+
+            var deliveryApp = GameObject.Find("DeliveryApp");
+            if (deliveryApp == null)
+            {
+                MelonLogger.Error("DeliveryApp not found.");
+                throw new Exception("DeliveryApp not found.");
+            }
+            var originalDropdown = FindChildByPath(deliveryApp.transform, "Container/Scroll View/Viewport/Content/Dan's Hardware/Contents/Panel/Destination/Dropdown (Legacy)").GetComponent<Dropdown>();
+            if (originalDropdown == null)
+            {
+                MelonLogger.Error("Original dropdown not found.");
+                throw new Exception("Original dropdown not found.");
+            }
+            var clonedDropdownGO = GameObject.Instantiate(originalDropdown.gameObject);
+            if (clonedDropdownGO == null)
+            {
+                MelonLogger.Error("Failed to clone dropdown.");
+                throw new Exception("Failed to clone dropdown.");
+            }
+            clonedDropdownGO.name = "SearchDropdown";
+            clonedDropdownGO.transform.SetParent(parent, false);
+            var clonedDropdown = clonedDropdownGO.GetComponent<Dropdown>();
+            var clonedDropdowRect = clonedDropdownGO.GetComponent<RectTransform>();
+            clonedDropdowRect.sizeDelta = new Vector2(-1030, 60);
+            clonedDropdowRect.anchoredPosition = new Vector2(100, 30);            
+            clonedDropdown.ClearOptions();
+            clonedDropdown.options.Add(new Dropdown.OptionData("Any"));
+            clonedDropdown.options.Add(new Dropdown.OptionData("Ingredients"));
+            clonedDropdown.options.Add(new Dropdown.OptionData("Effects"));
+            clonedDropdown.options.Add(new Dropdown.OptionData("Name"));
+
+            clonedDropdown.onValueChanged.AddListener(index =>
+            {
+                OnDropDownValueChanged(index);
+            });
+            return clonedDropdown;
+        }
+
+        
         private void ClearSearchText()
         {
             MelonLogger.Msg("Clearing search text.");
@@ -211,10 +288,19 @@ namespace JustEnoughDrugs
         private void OnSearchTextChanged(string value)
         {
             if (drugItems == null) return;
-
             HideOutline();
 
             UpdateDrugDisplay(value);
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)drugItems);
+        }
+
+        private void OnDropDownValueChanged(int index)
+        {
+            if (drugItems == null) return;
+            HideOutline();
+
+            UpdateDrugDisplay(inputField.text);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)drugItems);
         }
@@ -237,8 +323,8 @@ namespace JustEnoughDrugs
 
                         if (productEntry != null && productEntry.Definition != null)
                         {
-                            string drugName = productEntry.Definition.ToString();
-                            bool shouldShow = drugName.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
+
+                            bool shouldShow = ShouldShowDrug(productEntry, value, dropdownFilter.options[dropdownFilter.value].text);
 
                             if (drugItem.gameObject.activeSelf != shouldShow)
                             {
@@ -264,7 +350,35 @@ namespace JustEnoughDrugs
             }
         }
 
+        private bool ShouldShowDrug(ProductEntry productEntry, string searchText,string filterKey)
+        {
 
+            if (string.IsNullOrEmpty(searchText)) return true;
+
+            bool matchesEffect = false;
+            bool matchesName = false;
+            bool matchesIngredient = false;
+
+            if (filterKey == "Effects" || filterKey=="Any")
+            {
+                var effectList = new List<string>();
+                productEntry.Definition.Properties.ForEach(p => effectList.Add(p.ToString()));
+                matchesEffect = effectList.Any(effect => effect.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0);
+
+            }
+            if (filterKey == "Ingredients" || filterKey == "Any")
+            {
+                var ingredientList = new List<string>();
+                productEntry.Definition.Recipes.ForEach(r => r.Ingredients.ForEach(i=>ingredientList.Add(i.Item.ToString())));
+                matchesIngredient = ingredientList.Any(ingredient => ingredient.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (filterKey == "Name" || filterKey == "Any")
+            {
+                string drugName = productEntry.Definition.ToString();
+                matchesName = drugName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+            return matchesName || matchesEffect || matchesIngredient;
+        }
         private void DisableShortcuts()
         {
             var input = Singleton<GameInput>.Instance;
@@ -290,7 +404,6 @@ namespace JustEnoughDrugs
                 }
            
 
-            MelonLogger.Msg("All actions except allowed keys have been disabled.");
         }
 
         private void RestoreShortcuts()
@@ -302,7 +415,6 @@ namespace JustEnoughDrugs
                     action.Enable();
                 }
                 disabledActions.Clear();
-                MelonLogger.Msg("All previously disabled inputs restored.");
             }
 
         }
