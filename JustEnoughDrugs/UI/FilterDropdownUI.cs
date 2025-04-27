@@ -15,6 +15,7 @@ namespace JustEnoughDrugs.UI
         public string CurrentFilter => dropdown != null ? filterOptions[dropdown.value] : "Any";
 
         public event Action<string> OnFilterChanged;
+        private readonly string GOName = "SearchDropdown";
 
         public bool Initialize(Transform parent)
         {
@@ -54,7 +55,7 @@ namespace JustEnoughDrugs.UI
                 throw new Exception("Failed to clone dropdown.");
             }
 
-            clonedDropdownGO.name = "SearchDropdown";
+            clonedDropdownGO.name = GOName;
             clonedDropdownGO.transform.SetParent(parent, false);
 
             var clonedDropdown = clonedDropdownGO.GetComponent<Dropdown>();

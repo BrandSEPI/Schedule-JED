@@ -14,13 +14,15 @@ namespace JustEnoughDrugs.UI
         private Transform drugItems;
         private DrugSearcher searcher;
 
+        private DrugSorter sorter;
+
         public bool Initialize(Transform productManagerAppTransform)
         {
             try
             {
                 drugItems = GetDrugListTransform(productManagerAppTransform);
                 searcher = new DrugSearcher();
-
+                sorter = new DrugSorter();
                 if (drugItems != null)
                 {
                     MelonLogger.Msg("Drug list found and initialized.");
@@ -106,10 +108,52 @@ namespace JustEnoughDrugs.UI
                 }
             }
 
-            // Force rebuild layout
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)drugItems);
         }
 
+        public void ReorderDrugs(string sorterType, string sortOrder)
+        {
+            if (drugItems == null || sorterType == "None")
+                return;
+
+            MelonLogger.Msg($"Reordering drugs by {sorterType} in {sortOrder} order");
+
+            DrugSorter.SorterType type = (DrugSorter.SorterType)Enum.Parse(typeof(DrugSorter.SorterType), sorterType);
+            DrugSorter.SortOrder order = (DrugSorter.SortOrder)Enum.Parse(typeof(DrugSorter.SortOrder), sortOrder);
+
+            foreach (Transform category in drugItems)
+            {
+                foreach (Transform entries in category)
+                {
+                    var drugEntries = new List<ProductEntry>();
+                    var drugTransforms = new Dictionary<ProductEntry, Transform>();
+
+                    foreach (Transform drugItem in entries)
+                    {
+                        if (drugItem.gameObject.activeSelf)
+                        {
+                            var productEntry = drugItem.GetComponent<ProductEntry>();
+                            if (productEntry != null && productEntry.Definition != null)
+                            {
+                                drugEntries.Add(productEntry);
+                                drugTransforms.Add(productEntry, drugItem);
+                            }
+                        }
+                    }
+
+                    var sortedEntries = DrugSorter.SortDrugs(drugEntries, type, order);
+
+                    for (int i = 0; i < sortedEntries.Count; i++)
+                    {
+                        Transform drugItem = drugTransforms[sortedEntries[i]];
+                        drugItem.SetSiblingIndex(i);
+                    }
+                }
+            }
+
+            // Force rebuild layout
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)drugItems);
+        }
         private void HideOutline()
         {
             var outline = drugItems.Find("Outline");

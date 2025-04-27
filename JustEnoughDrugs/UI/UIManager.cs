@@ -20,6 +20,7 @@ namespace JustEnoughDrugs.UI
     {
         private SearchBarUI searchBar;
         private FilterDropdownUI filterDropdown;
+        private SorterDropDownUI sorterDropdown;
         private DrugListUI drugList;
         private RecipeUI recipeUI;
         private List<InputAction> disabledActions = new List<InputAction>();
@@ -36,19 +37,22 @@ namespace JustEnoughDrugs.UI
 
             searchBar = new SearchBarUI();
             filterDropdown = new FilterDropdownUI();
+            sorterDropdown = new SorterDropDownUI();
             drugList = new DrugListUI();
             recipeUI = new RecipeUI();
 
             bool searchBarInitialized = searchBar.Initialize(topbar);
             bool dropdownInitialized = filterDropdown.Initialize(topbar);
+            bool sorterInitialized = sorterDropdown.Initialize(topbar);
             bool drugListInitialized = drugList.Initialize(productManagerApp.transform);
 
             // Connect components
-            if (searchBarInitialized && dropdownInitialized && drugListInitialized)
+            if (searchBarInitialized && dropdownInitialized && drugListInitialized & sorterInitialized)
             {
                 searchBar.OnSearchChanged += HandleSearchChanged;
                 filterDropdown.OnFilterChanged += HandleFilterChanged;
                 searchBar.OnFocusChanged += HandleSearchFocus;
+                sorterDropdown.OnSorterChanged += HandleSorterChanged;
             }
 
             return searchBarInitialized && dropdownInitialized && drugListInitialized;
@@ -67,6 +71,11 @@ namespace JustEnoughDrugs.UI
         private void HandleFilterChanged(string filter)
         {
             drugList.UpdateDrugDisplay(searchBar.SearchText, filter);
+        }
+
+        private void HandleSorterChanged(string sorterType, string sortOrder)
+        {
+            drugList.ReorderDrugs(sorterType, sortOrder);
         }
 
         private void HandleSearchFocus(bool focused)
@@ -141,7 +150,6 @@ namespace JustEnoughDrugs.UI
             if (product?.Definition == null) return;
 
             var definition = product.Definition;
-            var productManagerApp = GameObject.Find("ProductManagerApp");
             var viewport = GameObject.Find("ProductManagerApp/Container/Details/Scroll View/Viewport/Content");
             var beforeSpace = viewport.transform.Find("Space");
             beforeSpace.gameObject.SetActive(false);

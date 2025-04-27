@@ -26,8 +26,6 @@ namespace JustEnoughDrugs
     {
         private bool isInitialized = false;
         private static UIManager uiManager;
-
-        // Keep these public static dictionaries for now
         public static Dictionary<ProductDefinition, float> ProductCosts = new();
         public static Dictionary<ProductDefinition, List<PropertyItemDefinition>> ExtendedRecipes = new();
 
