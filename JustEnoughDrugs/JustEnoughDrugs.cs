@@ -23,7 +23,7 @@ namespace JustEnoughDrugs
         public const string Description = "Add a searchBar to the drugs tab";
         public const string Author = "BrandSEPI";
         public const string Company = null;
-        public const string Version = "1.3.0";
+        public const string Version = "1.3.1";
         public const string DownloadLink = null;
     }
 
@@ -123,7 +123,7 @@ namespace JustEnoughDrugs
                     {
                         MelonLogger.Msg("Topbar found!");
                         dropdownFilter = SetupDropdown(topbar);
-            
+
                         MelonLogger.Msg("Dropdown successfully injected.");
                     }
                 }
@@ -138,7 +138,7 @@ namespace JustEnoughDrugs
         }
 
 
-   
+
         private Boolean initDrugList()
         {
             var productManagerApp = GameObject.Find("ProductManagerApp");
@@ -231,13 +231,13 @@ namespace JustEnoughDrugs
             buttonRect.anchoredPosition = new Vector2(-15, -30);
 
             var button = clearBtnGO.AddComponent<Button>();
-            button.onClick.AddListener(ClearSearchText);
+            button.onClick.AddListener(() => ClearSearchText());
 
-            inputField.onValueChanged.AddListener(OnSearchTextChanged);
+            inputField.onValueChanged.AddListener((value) => OnSearchTextChanged(value));
             return inputField;
         }
 
-        
+
         private Dropdown SetupDropdown(Transform parent)
         {
 
@@ -264,21 +264,19 @@ namespace JustEnoughDrugs
             var clonedDropdown = clonedDropdownGO.GetComponent<Dropdown>();
             var clonedDropdowRect = clonedDropdownGO.GetComponent<RectTransform>();
             clonedDropdowRect.sizeDelta = new Vector2(-1030, 60);
-            clonedDropdowRect.anchoredPosition = new Vector2(100, 30);            
+            clonedDropdowRect.anchoredPosition = new Vector2(100, 30);
             clonedDropdown.ClearOptions();
             clonedDropdown.options.Add(new Dropdown.OptionData("Any"));
             clonedDropdown.options.Add(new Dropdown.OptionData("Ingredients"));
             clonedDropdown.options.Add(new Dropdown.OptionData("Effects"));
             clonedDropdown.options.Add(new Dropdown.OptionData("Name"));
 
-            clonedDropdown.onValueChanged.AddListener(index =>
-            {
-                OnDropDownValueChanged(index);
-            });
+            clonedDropdown.onValueChanged.AddListener((index) => OnDropDownValueChanged(index));
+
             return clonedDropdown;
         }
 
-        
+
         private void ClearSearchText()
         {
             MelonLogger.Msg("Clearing search text.");
@@ -350,7 +348,7 @@ namespace JustEnoughDrugs
             }
         }
 
-        private bool ShouldShowDrug(ProductEntry productEntry, string searchText,string filterKey)
+        private bool ShouldShowDrug(ProductEntry productEntry, string searchText, string filterKey)
         {
 
             if (string.IsNullOrEmpty(searchText)) return true;
@@ -359,7 +357,7 @@ namespace JustEnoughDrugs
             bool matchesName = false;
             bool matchesIngredient = false;
 
-            if (filterKey == "Effects" || filterKey=="Any")
+            if (filterKey == "Effects" || filterKey == "Any")
             {
                 var effectList = new List<string>();
                 productEntry.Definition.Properties.ForEach(p => effectList.Add(p.ToString()));
@@ -369,7 +367,7 @@ namespace JustEnoughDrugs
             if (filterKey == "Ingredients" || filterKey == "Any")
             {
                 var ingredientList = new List<string>();
-                productEntry.Definition.Recipes.ForEach(r => r.Ingredients.ForEach(i=>ingredientList.Add(i.Item.ToString())));
+                productEntry.Definition.Recipes.ForEach(r => r.Ingredients.ForEach(i => ingredientList.Add(i.Item.ToString())));
                 matchesIngredient = ingredientList.Any(ingredient => ingredient.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0);
             }
             if (filterKey == "Name" || filterKey == "Any")
@@ -385,24 +383,24 @@ namespace JustEnoughDrugs
             var inputAsset = input.PlayerInput;
 
 
-                foreach (var action in inputAsset.actions)
+            foreach (var action in inputAsset.actions)
+            {
+                string bindingString = string.Join(",", action.bindings.Select(b => b.path));
+
+                if (bindingString.Contains("/keyboard/tab") ||
+                    bindingString.Contains("/keyboard/escape") ||
+                    bindingString.Contains("/mouse/rightButton"))
                 {
-                    string bindingString = string.Join(",", action.bindings.Select(b => b.path));
-
-                    if (bindingString.Contains("/keyboard/tab") ||
-                        bindingString.Contains("/keyboard/escape") ||
-                        bindingString.Contains("/mouse/rightButton"))
-                    {
-                        continue;
-                    }
-
-                    if (action.enabled)
-                    {
-                        action.Disable();
-                        disabledActions.Add(action);
-                    }
+                    continue;
                 }
-           
+
+                if (action.enabled)
+                {
+                    action.Disable();
+                    disabledActions.Add(action);
+                }
+            }
+
 
         }
 

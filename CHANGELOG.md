@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1]
+
+### Added
+
+- BugFix: Error during search bar initialisation: System.MissingMethodException: Method not found: 'Void UnityEngine.Events.UnityAction..ctor(System.Object, IntPtr)'.
+
+---
+
 ## [1.3.0]
 
 ### Added

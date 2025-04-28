@@ -1,6 +1,6 @@
 {
   "name": "JustEnoughDrugs",
-  "version_number": "1.3.0",
+  "version_number": "1.3.1",
   "website_url": "https://github.com/BrandSEPI/Schedule-JED",
   "description": "Adds a search bar and a dropdown to the drugs tab in Schedule I, allowing players to quickly filter and find drugs by name,ingredients or effects. Clean UI integration and real-time filtering for a smoother experience.",
   "dependencies": ["LavaGang-MelonLoader-0.7.0"]
