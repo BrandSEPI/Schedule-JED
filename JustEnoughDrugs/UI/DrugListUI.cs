@@ -102,13 +102,18 @@ namespace JustEnoughDrugs.UI
                 }
 
                 var noneObj = category.Find("None");
-                if (noneObj != null)
+                var EntriesObject = category.Find("Entries");
+                if (noneObj != null && EntriesObject != null)
                 {
                     noneObj.gameObject.SetActive(!drugDisplayed);
+                    EntriesObject.gameObject.SetActive(drugDisplayed);
                 }
             }
+            MelonLogger.Msg($"updated drug display with search text: {searchText} and filter key: {filterKey}");
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)drugItems);
+            UnityEngine.Object.FindObjectOfType<MonoBehaviour>()?.StartCoroutine(DelayedLayoutRebuild());
+
+
         }
 
         public void ReorderDrugs(string sorterType, string sortOrder)
@@ -150,9 +155,18 @@ namespace JustEnoughDrugs.UI
                     }
                 }
             }
+            UnityEngine.Object.FindObjectOfType<MonoBehaviour>()?.StartCoroutine(DelayedLayoutRebuild());
+        }
 
-            // Force rebuild layout
-            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)drugItems);
+        private System.Collections.IEnumerator DelayedLayoutRebuild()
+        {
+            yield return new WaitForEndOfFrame();
+            if (drugItems != null)
+            {
+                Canvas.ForceUpdateCanvases();
+
+                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)drugItems);
+            }
         }
         private void HideOutline()
         {

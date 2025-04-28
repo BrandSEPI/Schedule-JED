@@ -8,7 +8,6 @@ namespace JustEnoughDrugs.UI
 {
     public class RecipeUI
     {
-        // Constants
         private const int ITEMS_PER_ROW = 5;
         private const float INGREDIENT_SIZE = 50f;
         private const float SEPARATOR_SIZE = 24f;
@@ -21,22 +20,18 @@ namespace JustEnoughDrugs.UI
 
             for (int i = 0; i < recipe.Count; i++)
             {
-                // Create a new row if needed
                 GameObject currentLine = GetOrCreateRow(root.transform, i);
 
-                // Add the ingredient to the current row
                 AddIngredientToLine(currentLine.transform, recipe[i]);
 
                 bool isLast = i == recipe.Count - 1;
                 bool isEndOfLine = (i + 1) % ITEMS_PER_ROW == 0;
 
-                // Add separator (plus or arrow)
                 if (!isEndOfLine || isLast)
                 {
                     AddSeparator(currentLine.transform, isLast);
                 }
 
-                // Add result icon at the end
                 if (isLast)
                 {
                     AddResultIcon(currentLine.transform, definition);
@@ -63,12 +58,10 @@ namespace JustEnoughDrugs.UI
             int rowIndex = itemIndex / ITEMS_PER_ROW;
             string rowName = $"Line_{rowIndex}";
 
-            // Check if the row already exists
             Transform existingRow = parent.Find(rowName);
             if (existingRow != null)
                 return existingRow.gameObject;
 
-            // Create a new row
             var row = new GameObject(rowName, typeof(RectTransform), typeof(HorizontalLayoutGroup));
             row.transform.SetParent(parent, false);
 
@@ -98,7 +91,7 @@ namespace JustEnoughDrugs.UI
             var recipeContainer = GameObject.Find("RecipesContainer");
 
             if (recipeContainer == null) return;
-                    
+
 
             var firstRecipe = recipeContainer.transform.GetChild(0);
             var originalSeparator = firstRecipe.Find(separatorName);

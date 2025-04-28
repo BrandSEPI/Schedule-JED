@@ -69,7 +69,7 @@ namespace JustEnoughDrugs.UI
                 clonedDropdown.options.Add(new Dropdown.OptionData(option));
             }
 
-            clonedDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+            clonedDropdown.onValueChanged.AddListener((index) => OnDropdownValueChanged(index));
             return clonedDropdown;
         }
 
