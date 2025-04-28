@@ -43,19 +43,26 @@ namespace JustEnoughDrugs.UI
 
             bool searchBarInitialized = searchBar.Initialize(topbar);
             bool dropdownInitialized = filterDropdown.Initialize(topbar);
-            bool sorterInitialized = sorterDropdown.Initialize(topbar);
+            bool sorterInitialized = false;
+            if (ModConfig.EnableDrugSorting)
+            {
+                sorterInitialized = sorterDropdown.Initialize(topbar);
+            }
             bool drugListInitialized = drugList.Initialize(productManagerApp.transform);
 
             // Connect components
-            if (searchBarInitialized && dropdownInitialized && drugListInitialized & sorterInitialized)
+            if (searchBarInitialized && dropdownInitialized && drugListInitialized && (sorterInitialized || !ModConfig.EnableDrugSorting))
             {
                 searchBar.OnSearchChanged += HandleSearchChanged;
                 filterDropdown.OnFilterChanged += HandleFilterChanged;
                 searchBar.OnFocusChanged += HandleSearchFocus;
-                sorterDropdown.OnSorterChanged += HandleSorterChanged;
+                if (ModConfig.EnableDrugSorting)
+                {
+                    sorterDropdown.OnSorterChanged += HandleSorterChanged;
+                }
             }
 
-            return searchBarInitialized && dropdownInitialized && drugListInitialized;
+            return searchBarInitialized && dropdownInitialized && drugListInitialized && (sorterInitialized || !ModConfig.EnableDrugSorting);
         }
 
         public void Update()
@@ -151,8 +158,7 @@ namespace JustEnoughDrugs.UI
 
             var definition = product.Definition;
             var viewport = GameObject.Find("ProductManagerApp/Container/Details/Scroll View/Viewport/Content");
-            var beforeSpace = viewport.transform.Find("Space");
-            beforeSpace.gameObject.SetActive(false);
+
             if (viewport == null) return;
 
             string[] toRemove = { "CostDisplay", "FullRecipeTitle", "FullRecipeList", "FullRecipeValue" };
@@ -170,12 +176,21 @@ namespace JustEnoughDrugs.UI
                 var rectTransform = costVal.GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = new Vector2(78, 0);
             }
-            AddTextElement("FullRecipeTitle", "Full recipe(s) :", viewport.transform, -1, Color.white, 16);
-            if (MainMod.ExtendedRecipes.TryGetValue(definition, out var recipes) && recipes.Count > 0)
+
+            if (ModConfig.ShowFullRecipe)
             {
 
-                recipeUI.BuildFullRecipe(viewport.transform, recipes, definition);
+                AddTextElement("FullRecipeTitle", "Full recipe(s) :", viewport.transform, -1, Color.white, 16);
+                if (MainMod.ExtendedRecipes.TryGetValue(definition, out var recipes) && recipes.Count > 0)
+                {
 
+                    recipeUI.BuildFullRecipe(viewport.transform, recipes, definition);
+                }
+            }
+            var beforeSpace = viewport.transform.Find("Space");
+            if (beforeSpace != null)
+            {
+                beforeSpace.SetAsLastSibling();
             }
         }
 

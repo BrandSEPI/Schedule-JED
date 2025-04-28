@@ -7,6 +7,7 @@ using ScheduleOne.Product;
 using ScheduleOne.Property;
 using JustEnoughDrugs.UI;
 using JustEnoughDrugs.Models;
+using JustEnoughDrugs.Utils;
 [assembly: MelonInfo(typeof(JustEnoughDrugs.MainMod), JustEnoughDrugs.BuildInfo.Name, JustEnoughDrugs.BuildInfo.Version, JustEnoughDrugs.BuildInfo.Author)]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
@@ -29,6 +30,11 @@ namespace JustEnoughDrugs
         public static Dictionary<ProductDefinition, float> ProductCosts = new();
         public static Dictionary<ProductDefinition, List<PropertyItemDefinition>> ExtendedRecipes = new();
 
+
+        public override void OnInitializeMelon()
+        {
+            ModConfig.Setup();
+        }
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             isInitialized = false;
@@ -40,8 +46,8 @@ namespace JustEnoughDrugs
 
         private IEnumerator InitAfterSceneLoaded()
         {
+            // ModConfig.Setup();
             MelonLogger.Msg("Initializing JustEnoughDrugs...");
-
             uiManager = new UIManager();
 
             while (!isInitialized)

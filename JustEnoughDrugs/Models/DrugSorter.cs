@@ -8,7 +8,7 @@ namespace JustEnoughDrugs.Models
     {
 
         public enum SortOrder { Asc, Desc }
-        public enum SorterType { None, Addictiveness, Cost, Price, Profit }
+        public enum SorterType { Newest, Addictiveness, Cost, Price, Profit }
 
         public static List<ProductEntry> SortDrugs(List<ProductEntry> drugs, SorterType sorterType, SortOrder sortOrder)
         {
@@ -22,6 +22,8 @@ namespace JustEnoughDrugs.Models
                     return SortByPrice(drugs, sortOrder);
                 case SorterType.Profit:
                     return SortByProfit(drugs, sortOrder);
+                case SorterType.Newest:
+                    return SortByNewest(drugs, sortOrder);
                 default:
                     return drugs;
             }
@@ -69,6 +71,14 @@ namespace JustEnoughDrugs.Models
                     MainMod.ProductCosts.TryGetValue(d.Definition, out var cost);
                     return d.Definition.Price - cost;
                 }).ToList();
+        }
+
+        private static List<ProductEntry> SortByNewest(List<ProductEntry> drugs, SortOrder sortOrder)
+        {
+            var allProducts = ProductManager.Instance.AllProducts;
+            return sortOrder == SortOrder.Asc
+                ? drugs.OrderBy(d => allProducts.IndexOf(d.Definition)).ToList()
+                : drugs.OrderByDescending(d => allProducts.IndexOf(d.Definition)).ToList();
         }
     }
 }

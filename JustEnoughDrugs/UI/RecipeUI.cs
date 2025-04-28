@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ScheduleOne.Property;
 using ScheduleOne.Product;
-
+using ScheduleOne.UI.Tooltips;
 namespace JustEnoughDrugs.UI
 {
     public class RecipeUI
@@ -78,7 +78,8 @@ namespace JustEnoughDrugs.UI
         {
             var ingGO = new GameObject(ingredient.name, typeof(Image));
             ingGO.transform.SetParent(lineParent, false);
-
+            var tooltip = ingGO.AddComponent<ScheduleOne.UI.Tooltips.Tooltip>();
+            tooltip.text = ingredient.Name;
             var img = ingGO.GetComponent<Image>();
             img.sprite = ingredient.Icon;
             img.preserveAspect = true;
@@ -116,6 +117,8 @@ namespace JustEnoughDrugs.UI
             resultGO.transform.SetParent(lineParent, false);
 
             var resultImg = resultGO.GetComponent<Image>();
+            var tooltip = resultGO.AddComponent<ScheduleOne.UI.Tooltips.Tooltip>();
+            tooltip.text = definition.Name;
             resultImg.sprite = definition.Icon;
             resultImg.preserveAspect = true;
             resultImg.rectTransform.sizeDelta = new Vector2(INGREDIENT_SIZE, INGREDIENT_SIZE);

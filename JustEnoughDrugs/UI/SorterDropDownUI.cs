@@ -11,10 +11,10 @@ namespace JustEnoughDrugs.UI
     {
         private Dropdown sorterDropdown;
         private Dropdown orderDropdown;
-        private readonly List<string> sorterOptions = new() { "None", "Addictiveness", "Cost", "Price", "Profit" };
+        private readonly List<string> sorterOptions = new() { "Newest", "Addictiveness", "Cost", "Price", "Profit" };
         private readonly List<string> sortOrderOptions = new() { "Asc", "Desc" };
 
-        public string CurrentSorter => sorterDropdown != null ? sorterOptions[sorterDropdown.value] : "None";
+        public string CurrentSorter => sorterDropdown != null ? sorterOptions[sorterDropdown.value] : "Newest";
         public string CurrentOrder => orderDropdown != null ? sortOrderOptions[orderDropdown.value] : "Asc";
 
         public event Action<string, string> OnSorterChanged;
