@@ -14,6 +14,9 @@
 - Added estimated production cost display for each drug.
 - Added tooltips when hovering over ingredients and final products, showing their name and description.
 - Added config options via MelonPreferences to enable/disable sorting and full recipe view.
+- Added advanced search syntax:
+  - Use `,` for **AND** searches (must match all terms).
+  - Use `|` for **OR** searches (match any term).
 
 ### Changed
 

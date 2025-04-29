@@ -8,7 +8,7 @@ A MelonLoader mod for **Schedule I** that enhances the drugs tab with powerful s
 
 ## Preview
 
-![Mod Preview](https://i.imgur.com/9ZBYj2m.png)
+![Mod Preview](https://i.imgur.com/lEf6ngF.png)
 
 ## Features
 
@@ -75,3 +75,43 @@ When you open the drugs tab:
 - Clicking on a drug reveals its **full ingredient recipe** and **cost**.
 - Hovering over ingredients or results displays **tooltips** with detailed information.
 - Preferences like sorting and cost display are managed via **MelonPreferences** for easy customization.
+
+## Advanced Search Syntax
+
+You can use special characters to refine your search:
+
+| Syntax      | Behavior                                     | Example                                                                           |
+| :---------- | :------------------------------------------- | :-------------------------------------------------------------------------------- |
+| `,` (comma) | **AND** search: results must match all terms | `Refreshing,Sedating` → finds drugs matching both "Refreshing" **and** "Sedating" |
+| `\|` (pipe) | **OR** search: results can match any term    | `Refreshing\|OG` → finds drugs matching either "Refreshing" **or** "OG"           |
+
+## Known Issues
+
+- **Advanced "Any" Filter**:  
+  When using both the "Any" filter and the `,` (AND) separator, the search might incorrectly return "None" even if matching entries exist.  
+  _This will be addressed in a future update._
+
+- **Full Recipe Icon Size**:  
+  The size of ingredient and result icons in the full recipe view can sometimes appear too large or too small depending on the layout.  
+  _A dynamic scaling system is planned for future versions._
+
+## Future Updates & Ideas
+
+- **UI Readability Improvements**:  
+  Plans to further enhance the UI layout for better clarity and accessibility, especially when displaying large or complex recipes.
+
+- **Dynamic Recipe Scaling**:  
+  Adjust the size of ingredient and result icons dynamically based on the number of elements, improving visual balance.
+
+- **Weighted "Any" Filter**:  
+  Improve the "Any" filter by prioritizing fields (e.g., Name over Ingredients or Effects) to return more accurate search results.
+
+- **IL2CPP Compatibility**:  
+  Work in progress to support Schedule I's IL2CPP builds, ensuring compatibility with future game versions and broader mod support.
+
+- **Performance Optimization**:  
+  Optimize UI generation for extremely large drug lists to maintain real-time responsiveness even with heavy mods or custom content.
+
+---
+
+> _These features are planned for future versions and may evolve based on player feedback and Schedule I updates._
