@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.0.0]
+
+### Added
+
+- Added drug sorting functionality by:
+  - Newest
+  - Addictiveness
+  - Cost
+  - Price
+  - Profit
+- Added display of full drug recipes with ingredient icons.
+- Added estimated production cost display for each drug.
+- Added tooltips when hovering over ingredients and final products, showing their name and description.
+- Added config options via MelonPreferences to enable/disable sorting and full recipe view.
+
+### Changed
+
+- Minor visual adjustments to ingredient and result icons.
+- Refactored the codebase to use multiple folders instead of a single file.
+
+---
+
 ## [1.3.1]
 
 ### Added
